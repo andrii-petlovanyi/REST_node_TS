@@ -1,41 +1,39 @@
+import { ILogger } from './logger/logger.interface';
 import express, { Express } from 'express';
-import { Server } from 'node:http'
+import { Server } from 'node:http';
 import { ExceptionFilter } from './errors/exception.filter';
-import { LoggerService } from './logger/logger.service';
-import { UserController } from './users/user.controller';
+import { UserController } from './users/users.controller';
+import { inject, injectable } from 'inversify';
+import { TYPES } from './types';
+import 'reflect-metadata';
 
+@injectable()
 export class App {
-  app: Express;
-  port: number;
-  server: Server;
-  logger: LoggerService;
-  userController: UserController;
-  exceptionFilter: ExceptionFilter;
+	app: Express;
+	port: number;
+	server: Server;
 
+	constructor(
+		@inject(TYPES.ILogger) private logger: ILogger,
+		@inject(TYPES.UserController) private userController: UserController,
+		@inject(TYPES.ExceptionFilter) private exceptionFilter: ExceptionFilter,
+	) {
+		this.app = express();
+		this.port = 3002;
+	}
 
-  constructor(
-    logger: LoggerService,
-    userController: UserController,
-    exceptionFilter: ExceptionFilter) {
-    this.app = express()
-    this.port = 3002
-    this.logger = logger
-    this.userController = userController
-    this.exceptionFilter = exceptionFilter
-  }
+	useRoutes(): void {
+		this.app.use('/api/users', this.userController.router);
+	}
 
-  useRoutes() {
-    this.app.use('/api/users', this.userController.router)
-  }
+	useExceptionFilter(): void {
+		this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
+	}
 
-  useExceptionFilter() {
-    this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter))
-  }
-
-  public async init() {
-    this.useRoutes()
-    this.useExceptionFilter()
-    this.server = this.app.listen(this.port)
-    this.logger.log(`Server is running on http://localhost:${this.port}`)
-  }
+	public async init(): Promise<void> {
+		this.useRoutes();
+		this.useExceptionFilter();
+		this.server = this.app.listen(this.port);
+		this.logger.log(`⚡️ Server is running on http://localhost:${this.port}`);
+	}
 }
