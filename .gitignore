@@ -1,4 +1,7 @@
 /dist
 /node_modules
-.DS_Store
-.clinic
+/.DS_Store
+/.clinic
+/.env
+/prisma/dev.db
+/prisma/dev.db-journal

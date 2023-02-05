@@ -1,8 +1,8 @@
 import { TYPES } from './../types';
-import { ILogger } from './../logger/logger.interface';
-import { inject, injectable } from 'inversify';
-import { IExceptionFilter } from './exception.filter.interface';
 import { NextFunction, Response, Request } from 'express';
+import { inject, injectable } from 'inversify';
+import { ILogger } from './../logger/logger.interface';
+import { IExceptionFilter } from './exception.filter.interface';
 import { HTTPError } from './http-error.class';
 import 'reflect-metadata';
 
