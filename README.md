@@ -1,2 +1,2 @@
 # REST_node_TS
-Small REST Full API on Node.js/Express/TypeScript (tutorial)
+Seample RESTfull API on Node.js/Express/TypeScript/Inversify (tutorial) (DI/IoC principles of architecture)
